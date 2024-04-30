@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script>
+        $(document).ready(function(){
+
+            $.ajax({
+                url: 'http://192.168.100.101:9001/produtos',
+                type: 'GET',
+                data: {},
+            })
+            .done(function(xhr) {
+                console.log(xhr);
+                if(xhr.resp == 's'){
+                    for (let p = 0; p < xhr.Produto.length; p++) {
+                        
+                        $('.recebeProdutos').append('<tr><td>'+ xhr.Produto[p].Produto+'</td></tr>');
+                    }
+                }else{
+            
+                }
+            })
+            .fail(function() {
+            
+            });
+
+
+        });
+    </script>
+</head>
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th>Produto</th>
+            </tr>
+        </thead>
+        <tbody class="recebeProdutos">
+
+        </tbody>
+    </table>
+</body>
+</html>

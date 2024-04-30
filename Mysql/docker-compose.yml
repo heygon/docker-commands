@@ -1,0 +1,14 @@
+version: '3.1'
+
+services:
+  maria:
+    image: linuxserver/mariadb:alpine
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 4595995ab
+
+  pdmin:
+    image: adminer
+    restart: always
+    ports:
+      - 8883:8080

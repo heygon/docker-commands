@@ -1,0 +1,29 @@
+version: "3.7"
+services:
+
+  banco:
+    image: "mongo"
+    container_name: mongo-container
+    ports:
+      - "27018:27017"
+      
+  server:
+    build: "./api/"
+    container_name: node-container
+    volumes: 
+      - ./api:/home/node/app
+    ports:
+      - "9004:9001"
+    depends_on:
+      - banco
+
+  front:
+    build: "./website"
+    container_name: web-container
+    volumes:
+      - ./website:/var/www/html
+    ports:
+      - "9003:80"
+    depends_on:
+      - banco
+      - server

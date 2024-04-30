@@ -1,0 +1,66 @@
+version: "3.7"
+services:
+
+  #server:
+  #  build: "./backend"
+  #  container_name: backend-container
+  #  links:
+  #    - banco
+  #  volumes: 
+  #    - ./backend:/var/www/html
+  #  ports:
+  #    - "9001:80"
+  #  depends_on:
+  #    - banco
+
+  #front:
+  #  build: "./frontend"
+  #  container_name: frontend-container
+  #  volumes:
+  #    - ./frontend:/var/www/html
+  #  ports:
+  #    - "8888:80"
+  #  depends_on:
+  #    - banco
+  #    - server
+  
+  wordpress:
+     depends_on:
+       - banco
+     image: wordpress:latest
+     ports:
+       - "8812:80"
+     restart: always
+     environment:
+       - WORDPRESS_DB_HOST=banco
+       - WORDPRESS_DB_USER=root
+       - WORDPRESS_DB_PASSWORD=4595995ab
+       
+  myadmin:
+    image: phpmyadmin
+    container_name: phpmyadmin-container
+    restart: always
+    ports:
+      - "8882:80"
+    depends_on:
+      - banco
+    external_links:
+      - banco:hub
+    environment:
+      - PMA_HOST=banco
+      
+  banco:
+    image: hypriot/rpi-mysql
+    container_name: banco-container
+    ports:
+        - "3306:3036"
+    environment:
+        MYSQL_ROOT_PASSWORD: 4595995ab
+        MYSQL_DATABASE: teste
+    volumes: 
+      - ./banco:/db
+    #command:
+    #  - /bin/bash
+    #  - -c
+    #  - |
+    #    mysql -u root --password=4595995ab -h localhost teste < /db/banco.sql
