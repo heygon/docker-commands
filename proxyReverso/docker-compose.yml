@@ -1,0 +1,60 @@
+services:
+  loadbalancer:
+    image: nginx:1.27.4-alpine-slim
+    container_name: loadbalancer
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx:/etc/nginx/nginx.conf
+    restart: unless-stopped
+
+  front1:
+    image: nginx:1.27.4-alpine-slim
+    container_name: front1
+    ports:
+      - "80"
+    volumes:
+      - ./front:/usr/share/nginx/html
+    restart: unless-stopped
+  
+  front2:
+    image: nginx:1.27.4-alpine-slim
+    container_name: front2
+    ports:
+      - "80"
+    volumes:
+      - ./front:/usr/share/nginx/html
+    restart: unless-stopped
+
+  backend1:
+    image: node:23-alpine
+    container_name: backend1
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend:/app
+    working_dir: /app
+    command: sh -c "npm install && npm start"
+    restart: unless-stopped
+  
+  backend2:
+    image: node:23-alpine
+    container_name: backend2
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend:/app
+    working_dir: /app
+    command: sh -c "npm install && npm start"
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  db:
+    image: postgres:15
+    volumes:
+      - pgdata1:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgree
+      - POSTGRES_PASSWORD=postgree123
+      - POSTGRES_DB=appdb
